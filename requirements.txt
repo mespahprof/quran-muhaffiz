@@ -1,0 +1,19 @@
+# === Core Flask Dependencies ===
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# === Speech Recognition (choose one or both) ===
+
+# Option A: OpenAI Whisper - local, no internet needed, highly accurate for Arabic
+# Uncomment the line below to install (large download ~1GB):
+# openai-whisper>=20231117
+
+# Option B: SpeechRecognition - uses Google STT free API (requires internet)
+SpeechRecognition>=3.10.0
+
+# === Audio Format Conversion (webm/ogg -> wav) ===
+pydub>=0.25.1
+
+# === Optional: GPU acceleration for Whisper ===
+# torch>=2.0.0
+# torchaudio>=2.0.0

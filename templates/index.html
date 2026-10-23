@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مُحَفِّظ — تطبيق تحفيظ القرآن الكريم</title>
+  <meta name="description" content="تطبيق ذكي لتحفيظ القرآن الكريم وتصحيح التلاوة بالذكاء الاصطناعي" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            quran: ['Amiri Quran', 'Amiri', 'serif'],
+            ui: ['Cairo', 'sans-serif'],
+          },
+          animation: {
+            'pulse-gold': 'pulseGold 1.5s ease-in-out infinite',
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'ripple': 'ripple 1s ease-out infinite',
+          },
+          keyframes: {
+            pulseGold: {
+              '0%, 100%': { boxShadow: '0 0 0 0 rgba(251,191,36,0.5)' },
+              '50%': { boxShadow: '0 0 0 20px rgba(251,191,36,0)' },
+            },
+            fadeIn: {
+              from: { opacity: 0, transform: 'translateY(10px)' },
+              to:   { opacity: 1, transform: 'translateY(0)' },
+            },
+            slideUp: {
+              from: { opacity: 0, transform: 'translateY(20px)' },
+              to:   { opacity: 1, transform: 'translateY(0)' },
+            },
+            ripple: {
+              '0%':   { transform: 'scale(1)',   opacity: 0.8 },
+              '100%': { transform: 'scale(1.8)', opacity: 0 },
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="bg-app pattern-overlay">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50 glass border-b border-white/5">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-900/40">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-amber-300 leading-none">مُحَفِّظ</h1>
+          <p class="text-xs text-slate-500">تصحيح التلاوة بالذكاء الاصطناعي</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <label class="text-sm text-slate-400 hidden sm:block">السورة:</label>
+        <div class="relative">
+          <select id="surahSelect" class="surah-select pr-4 pl-8">
+            {% for surah in surah_list %}
+            <option value="{{ surah.number }}">{{ surah.number }}. {{ surah.name }} ({{ surah.ayah_count }} آيات)</option>
+            {% endfor %}
+          </select>
+          <svg class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-6">
+
+    <!-- Surah Info Bar -->
+    <div class="glass rounded-2xl p-4 flex items-center justify-between animate-fade-in">
+      <div>
+        <p class="text-xs text-slate-500 mb-0.5">تتلو الآن من</p>
+        <h2 id="surahName" class="text-xl font-bold text-amber-300">سورة الفاتحة</h2>
+      </div>
+      <div class="text-center">
+        <p class="text-xs text-slate-500 mb-0.5">التقدم</p>
+        <p id="ayahCounter" class="text-2xl font-bold text-white">١ / ٧</p>
+      </div>
+      <div class="text-left">
+        <p class="text-xs text-slate-500 mb-0.5">درجة الجلسة</p>
+        <p id="sessionScore" class="text-xl font-bold text-emerald-400">—</p>
+      </div>
+    </div>
+
+    <!-- Ayah Progress Dots -->
+    <div id="ayahDots" class="flex justify-center gap-2 flex-wrap px-4"></div>
+
+    <!-- Main Ayah Card -->
+    <div id="ayahCard" class="glass-gold rounded-3xl p-8 md:p-12 animate-fade-in relative overflow-hidden">
+      <div class="absolute top-4 right-4 text-amber-600/20 text-4xl select-none">﴾</div>
+      <div class="absolute bottom-4 left-4 text-amber-600/20 text-4xl select-none">﴿</div>
+
+      <div class="flex justify-center mb-6">
+        <span id="ayahNumberBadge" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold text-sm">١</span>
+      </div>
+
+      <div id="ayahTextDisplay" class="quran-text text-3xl md:text-4xl text-ayah mb-8 leading-loose min-h-[80px] flex flex-wrap justify-center gap-x-2 gap-y-1 items-center px-4">
+        <span>جاري التحميل…</span>
+      </div>
+
+      <div class="ornament mb-6"><span>۞</span></div>
+
+      <div id="transcribedSection" class="hidden text-center mb-4 animate-slide-up">
+        <p class="text-xs text-slate-500 mb-1">ما سُمع:</p>
+        <p id="transcribedText" class="text-lg text-slate-300 font-quran"></p>
+      </div>
+
+      <div id="resultBadge" class="hidden justify-center mb-4 animate-fade-in"></div>
+
+      <div id="matchSection" class="hidden mb-2">
+        <div class="flex justify-between text-xs text-slate-500 mb-1">
+          <span>نسبة التطابق</span>
+          <span id="matchPercent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div id="matchBar" class="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="glass rounded-2xl p-6 animate-fade-in">
+      <div class="flex flex-col items-center gap-6">
+
+        <div id="waveform" class="hidden items-center gap-1 h-8">
+          <div class="wave-bar" style="animation-delay:0s"></div>
+          <div class="wave-bar" style="animation-delay:0.1s"></div>
+          <div class="wave-bar" style="animation-delay:0.2s"></div>
+          <div class="wave-bar" style="animation-delay:0.3s"></div>
+          <div class="wave-bar" style="animation-delay:0.4s"></div>
+          <div class="wave-bar" style="animation-delay:0.3s"></div>
+          <div class="wave-bar" style="animation-delay:0.2s"></div>
+          <div class="wave-bar" style="animation-delay:0.1s"></div>
+          <div class="wave-bar" style="animation-delay:0s"></div>
+        </div>
+
+        <p id="statusText" class="text-sm text-slate-400 h-5 text-center"></p>
+
+        <div class="flex items-center gap-6 flex-wrap justify-center">
+          <button id="playBtn" class="ctrl-btn btn-gold" data-tooltip="استمع لتلاوة الشيخ المنشاوي" onclick="playSheikhAudio()">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span>استمع</span>
+          </button>
+
+          <div class="relative">
+            <div class="mic-btn" id="micBtn" onclick="toggleRecording()" data-tooltip="اضغط للتسجيل">
+              <div class="ripple-ring"></div>
+              <svg id="micIcon" class="w-9 h-9 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+              </svg>
+              <svg id="stopIcon" class="w-9 h-9 text-rose-300 hidden" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 6h12v12H6z"/>
+              </svg>
+            </div>
+          </div>
+
+          <button id="nextBtn" class="ctrl-btn btn-next" data-tooltip="الانتقال للآية التالية" onclick="nextAyah()">
+            <span>التالية</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+        </div>
+
+        <button id="retryBtn" class="ctrl-btn btn-ghost hidden" onclick="resetForRetry()">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          <span>إعادة المحاولة</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Session Stats -->
+    <div class="grid grid-cols-3 gap-4 animate-fade-in">
+      <div class="glass rounded-2xl p-4 text-center">
+        <p class="text-2xl font-bold text-emerald-400" id="statCorrect">0</p>
+        <p class="text-xs text-slate-500 mt-1">صحيحة</p>
+      </div>
+      <div class="glass rounded-2xl p-4 text-center">
+        <p class="text-2xl font-bold text-rose-400" id="statErrors">0</p>
+        <p class="text-xs text-slate-500 mt-1">أخطاء</p>
+      </div>
+      <div class="glass rounded-2xl p-4 text-center">
+        <p class="text-2xl font-bold text-amber-400" id="statAttempts">0</p>
+        <p class="text-xs text-slate-500 mt-1">محاولات</p>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="glass rounded-2xl p-5 flex gap-4 items-start animate-fade-in">
+      <div class="text-amber-500 text-2xl mt-0.5">💡</div>
+      <div>
+        <h3 class="text-sm font-semibold text-amber-300 mb-1">نصيحة</h3>
+        <p id="tipText" class="text-sm text-slate-400 leading-relaxed"></p>
+      </div>
+    </div>
+
+  </main>
+
+  <audio id="sheikhAudio" preload="none"></audio>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

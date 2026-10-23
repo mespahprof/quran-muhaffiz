@@ -1,0 +1,291 @@
+﻿/* ─────────────────────────────────────────────────────────────
+   مُحَفِّظ — Global Stylesheet
+   ──────────────────────────────────────────────────────────── */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #0a0e1a;
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+/* ── Background ─────────────────────────────────────────────── */
+.bg-app {
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(120,80,20,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(15,60,40,0.22) 0%, transparent 55%),
+    linear-gradient(135deg, #0a0e1a 0%, #0d1526 50%, #0a1610 100%);
+}
+
+.pattern-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f59e0b' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ── Glassmorphism ──────────────────────────────────────────── */
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.glass-gold {
+  background: rgba(245,158,11,0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(245,158,11,0.2);
+}
+
+/* ── Quran text ─────────────────────────────────────────────── */
+.quran-text {
+  font-family: 'Amiri Quran', 'Amiri', serif;
+  line-height: 2.2;
+  text-align: center;
+}
+
+.text-ayah { color: #f8f3e6; }
+
+/* ── Word highlighting ──────────────────────────────────────── */
+.word-correct {
+  color: #34d399;
+  text-shadow: 0 0 12px rgba(52,211,153,0.5);
+  transition: all 0.3s ease;
+}
+.word-incorrect {
+  color: #fb7185;
+  text-shadow: 0 0 12px rgba(251,113,133,0.5);
+  text-decoration: underline wavy #fb7185;
+  transition: all 0.3s ease;
+}
+.word-normal {
+  color: #f8f3e6;
+  transition: all 0.3s ease;
+}
+
+/* ── Mic button ─────────────────────────────────────────────── */
+.mic-btn {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #1e3a5f, #0f2744);
+  border: 2px solid rgba(251,191,36,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.mic-btn:hover {
+  transform: scale(1.05);
+  border-color: rgba(251,191,36,0.6);
+}
+.mic-btn.recording {
+  background: linear-gradient(135deg, #7f1d1d, #991b1b);
+  border-color: #f43f5e;
+  animation: pulseGold 1.5s ease-in-out infinite;
+}
+.mic-btn .ripple-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid #f43f5e;
+  animation: ripple 1s ease-out infinite;
+  opacity: 0;
+}
+.mic-btn.recording .ripple-ring { opacity: 1; }
+
+/* ── Progress bar ───────────────────────────────────────────── */
+.progress-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease, background 0.4s ease;
+}
+
+/* ── Surah selector ─────────────────────────────────────────── */
+.surah-select {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(245,158,11,0.25);
+  color: #f8f3e6;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  appearance: none;
+  direction: rtl;
+}
+.surah-select:focus {
+  outline: none;
+  border-color: rgba(245,158,11,0.6);
+  box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+}
+.surah-select option { background: #0d1526; color: #f8f3e6; }
+
+/* ── Result badge ───────────────────────────────────────────── */
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.badge-success { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #34d399; }
+.badge-error   { background: rgba(244,63,94,0.15);  border: 1px solid rgba(244,63,94,0.4);  color: #fb7185; }
+.badge-info    { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #93c5fd; }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.ctrl-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+}
+.btn-gold {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff8e1;
+  box-shadow: 0 4px 15px rgba(217,119,6,0.35);
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217,119,6,0.5); }
+.btn-gold:active { transform: translateY(0); }
+
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
+  color: #cbd5e1;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); color: #f1f5f9; }
+
+.btn-next {
+  background: linear-gradient(135deg, #065f46, #047857);
+  color: #d1fae5;
+  box-shadow: 0 4px 15px rgba(5,150,105,0.3);
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(5,150,105,0.5); }
+
+/* ── Ayah dots ──────────────────────────────────────────────── */
+.ayah-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.ayah-dot.active { background: #f59e0b; transform: scale(1.4); }
+.ayah-dot.done   { background: #10b981; }
+
+/* ── Ornament ───────────────────────────────────────────────── */
+.ornament {
+  display: flex; align-items: center; gap: 12px;
+  color: rgba(245,158,11,0.4);
+  font-size: 18px;
+}
+.ornament::before, .ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(245,158,11,0.3), transparent);
+}
+
+/* ── Tooltip ────────────────────────────────────────────────── */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%; transform: translateX(-50%);
+  background: #1e2d45;
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  font-family: 'Cairo', sans-serif;
+}
+[data-tooltip]:hover::after { opacity: 1; }
+
+/* ── Waveform ───────────────────────────────────────────────── */
+.wave-bar {
+  width: 4px;
+  border-radius: 2px;
+  background: #f59e0b;
+  animation: wave 0.8s ease-in-out infinite;
+}
+
+/* ── Spinner ────────────────────────────────────────────────── */
+.spinner {
+  width: 24px; height: 24px;
+  border: 3px solid rgba(245,158,11,0.3);
+  border-top-color: #f59e0b;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ── Floating particles ─────────────────────────────────────── */
+.particle {
+  position: fixed;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(245,158,11,0.4);
+  pointer-events: none;
+  animation: float linear infinite;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(245,158,11,0.3); border-radius: 3px; }
+
+/* ── Keyframes ──────────────────────────────────────────────── */
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.5); }
+  50%       { box-shadow: 0 0 0 20px rgba(251,191,36,0); }
+}
+@keyframes ripple {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes wave {
+  0%, 100% { height: 6px; }
+  50%       { height: 24px; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes float {
+  0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Font class helpers ─────────────────────────────────────── */
+.font-quran { font-family: 'Amiri Quran', 'Amiri', serif; }
