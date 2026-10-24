@@ -26,6 +26,7 @@ app = Flask(
 )
 CORS(app)
 app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024  # 25 MB max upload
+application = app  # Vercel WSGI entry point alias
 
 # ─── Quran Data ───────────────────────────────────────────────────────────────
 # سورة الفاتحة كاملة مع البيانات الوصفية
