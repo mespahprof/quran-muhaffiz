@@ -1,10 +1,81 @@
+# ==============================================================================
+# Git Ignore - مشروع المصحف المحفظ (Quran Muhaffiz)
+# ==============================================================================
+
+# --- بيئات بايثون الافتراضية (Python Virtual Environments) ---
 .venv/
+venv/
+env/
+ENV/
+*.venv/
+env.bak/
+venv.bak/
+
+# --- ملفات التخزين المؤقت لبايثون (Python Cache & Bytecode) ---
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# --- المتغيرات البيئية والأسرار (Environment Variables & Secrets) ---
 .env
-.DS_Store
-Thumbs.db
-.system_generated/
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+!.env.example
+
+# --- استضافة Vercel والتطوير السحابي (Vercel) ---
+.vercel/
+
+# --- المجلد المكرر الناتج عن clone داخلي (Nested Clone) ---
+quran-muhaffiz/
+
+# --- ملفات الصوت المؤقتة والتسجيلات التجريبية (Temporary Audio & Uploads) ---
+tmp/
+temp/
+# استثناء ملفات الصوت الثابتة إذا وُجدت مستقبلاً داخل static/
+!static/**
+
+# --- نماذج الذكاء الاصطناعي والأوزان الضخمة (Whisper Models & Weights) ---
+models/
+*.pt
+*.pth
+*.bin
+*.onnx
+
+# --- سجلات التشغيل والأخطاء (Logs) ---
 *.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- محررات الأكواد وبيئات التطوير (IDEs & Editors) ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# --- ملفات أنظمة التشغيل (Operating System Files) ---
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# --- أدوات الذكاء الاصطناعي (AI Agent Workspace) ---
+.system_generated/

@@ -1,10 +1,33 @@
+# Virtual Environments
 .venv/
+venv/
+env/
+
+# Python Cache
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+
+# Environment
 .env
+.env.*
+!.env.example
+
+# Unneeded Repository / Clones
+quran-muhaffiz/
+
+# OS Files
 .DS_Store
 Thumbs.db
-.system_generated/
+[Dd]esktop.ini
+
+# Logs & Temp
 *.log
+tmp/
+temp/
+.system_generated/
+
+# Models
+models/
+*.pt
+*.bin
